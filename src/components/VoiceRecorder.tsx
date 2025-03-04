@@ -36,7 +36,6 @@ const VoiceRecorder: FC = () => {
   };
   
 
-  // Example effect to trigger conversion after stopping recording
   useEffect(() => {
     if (recordingState === 'stopped' && audioBlob) {
       convertVoiceToText(audioBlob);
