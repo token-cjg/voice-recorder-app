@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# Voice Recorder App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This is a simple React web application that allows users to record their voice, pause and stop the recording, and convert the audio to text. The app demonstrates core concepts of React including the use of Hooks for state management and integration with third-party APIs. Additionally, a bonus feature supports offline voice recording by automatically converting the audio once connectivity is restored.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Voice Recording:**  
+  Record your voice using the Record button.
+- **Pause & Resume:**  
+  Pause the recording mid-session and resume later.
+- **Stop Recording:**  
+  Stop the recording to finalize and process the audio.
+- **Voice-to-Text Conversion:**  
+  Convert the recorded audio into text using the AssemblyAI API.
+- **Offline Support (Bonus):**  
+  Record your voice while offline and automatically convert it when the connection is restored.
+- **Modern UI:**  
+  A clean and user-friendly interface styled with CSS.
+- **(Optional) Unit Testing:**  
+  Tests using Jest and React Testing Library.
+- **(Optional) CI/CD Pipeline:**  
+  Automatic testing through a CI/CD pipeline.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+- [Node.js](https://nodejs.org/) and npm installed on your machine.
+- An AssemblyAI API key. You can get one from [AssemblyAI](https://www.assemblyai.com/).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/your-username/voice-recorder-app.git
+   cd voice-recorder-app
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Set Up Environment Variables:**
+Create a .env file in the root directory and add your AssemblyAI API key:
+   ```bash
+   REACT_APP_ASSEMBLYAI_API_KEY=your_api_key_here
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Running the Application
+Start the development server:
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+Your application will run on http://localhost:3000.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Usage
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Record:**
+  Click the Record button to start capturing audio.
+- **Pause:**
+  Use the Pause button to temporarily stop the recording.
+- **Resume:**
+  If paused, click Resume to continue recording.
+- **Stop:**
+  Click the Stop button to finish the recording. The app will then convert your audio into text.
+- **Offline Mode (Bonus):**
+  When offline, the recording is stored locally and automatically processed when connectivity is restored.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Testing
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+(Optional) Run the unit tests using:
+   ```bash
+   npm test
+   ```
 
-## Learn More
+## CI/CD Pipeline
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+(Optional) A CI/CD pipeline can be set up (e.g., with GitHub Actions) to run tests automatically on every push or pull request.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Technologies Used
 
-### Code Splitting
+- **React:** For building the user interface.
+- **React Hooks:** For managing component state and side effects.
+- **Web Audio API:** For recording audio in the browser.
+- **AssemblyAI API:** For converting voice recordings to text.
+- **CSS:** For styling the application.
+- **Jest & React Testing Library:** For unit testing (optional).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Demo
 
-### Analyzing the Bundle Size
+A demo video showcasing the application features is available here (insert link to demo video).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## License
 
-### Making a Progressive Web App
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Contact
 
-### Advanced Configuration
+For any questions or feedback, please feel free to file an issue with any suggested improvements. Or even submit a PR, see CONTRIBUTING.md for further particulars if you wish to do so.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to modify the content to match your project details and add any additional sections as needed.
