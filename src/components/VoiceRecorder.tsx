@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import { useState, useEffect, FC } from 'react';
 import useMediaRecorder from '../hooks/useMediaRecorder';
 
 const VoiceRecorder: FC = () => {
@@ -13,12 +13,28 @@ const VoiceRecorder: FC = () => {
 
   const [transcript, setTranscript] = useState<string>('');
 
-  // Optional: Implement a function to handle conversion
-  const convertVoiceToText = async (blob: Blob): Promise<void> => {
-    // Example: using Web Speech API or sending blob to a third-party API
-    // Set transcript state once conversion is done
-    setTranscript("Voice-to-text result goes here");
+  const convertVoiceToText = (blob: Blob): void => {
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+  
+    fetch('https://api.your-speech-to-text-provider.com/recognize', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_API_KEY'
+      },
+      body: formData,
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error(`Request failed with status ${response.status}`);
+          return;
+        }
+        return response.json();
+      })
+      .then(data => data && setTranscript(data.transcript))
+      .catch(error => console.error("Error converting voice to text:", error));
   };
+  
 
   // Example effect to trigger conversion after stopping recording
   useEffect(() => {
