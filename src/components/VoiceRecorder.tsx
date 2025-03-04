@@ -1,6 +1,8 @@
 import { useState, useEffect, FC } from 'react';
 import useMediaRecorder from '../hooks/useMediaRecorder';
 
+const ASSEMBLYAI_API_KEY = process.env.REACT_APP_ASSEMBLYAI_API_KEY as string;
+
 const VoiceRecorder: FC = () => {
   const { 
     recordingState, 
@@ -13,28 +15,62 @@ const VoiceRecorder: FC = () => {
 
   const [transcript, setTranscript] = useState<string>('');
 
-  const convertVoiceToText = (blob: Blob): void => {
-    const formData = new FormData();
-    formData.append('audio', blob, 'recording.webm');
+  const convertVoiceToText = async (blob: Blob): Promise<void> => {
+    console.log('Converting voice to text...');
+    console.log('Blob:', blob);
+    console.log('API key:', ASSEMBLYAI_API_KEY);
+    try {
+      // Step 1: Upload the blob to AssemblyAI's upload endpoint
+      const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
+        method: 'POST',
+        headers: {
+          authorization: ASSEMBLYAI_API_KEY,
+        },
+        body: blob,
+      });
+      const uploadData = await uploadResponse.json();
+      const audioUrl = uploadData.upload_url;
   
-    fetch('https://api.your-speech-to-text-provider.com/recognize', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer YOUR_API_KEY'
-      },
-      body: formData,
-    })
-      .then(response => {
-        if (!response.ok) {
-          console.error(`Request failed with status ${response.status}`);
-          return;
+      // Step 2: Start a transcription job using the uploaded audio URL
+      const transcriptResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
+        method: 'POST',
+        headers: {
+          authorization: ASSEMBLYAI_API_KEY,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ audio_url: audioUrl }),
+      });
+      const transcriptData = await transcriptResponse.json();
+      const transcriptId = transcriptData.id;
+  
+      // Step 3: Poll for the transcription result
+      let transcriptText = '';
+      let status = transcriptData.status;
+      while (status !== 'completed') {
+        // Wait a few seconds before polling again
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+        const pollingResponse = await fetch(
+          `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
+          {
+            headers: { authorization: ASSEMBLYAI_API_KEY },
+          }
+        );
+        const pollingData = await pollingResponse.json();
+        status = pollingData.status;
+  
+        if (status === 'completed') {
+          transcriptText = pollingData.text;
+        } else if (status === 'error') {
+          console.error('Transcription error:', pollingData.error);
+          break;
         }
-        return response.json();
-      })
-      .then(data => data && setTranscript(data.transcript))
-      .catch(error => console.error("Error converting voice to text:", error));
-  };
-  
+      }
+      setTranscript(transcriptText);
+    } catch (error) {
+      console.error('Error converting voice to text:', error);
+    }
+  };  
 
   useEffect(() => {
     if (recordingState === 'stopped' && audioBlob) {
