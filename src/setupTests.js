@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+import 'whatwg-fetch';
 import '@testing-library/jest-dom';
 import ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
