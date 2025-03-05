@@ -1,4 +1,4 @@
-import { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import useMediaRecorder from '../hooks/useMediaRecorder';
 import { useTranscriptionFlow } from '../hooks/useTranscriptionFlow';
 
