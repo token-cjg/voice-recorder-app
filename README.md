@@ -14,13 +14,13 @@ This is a simple React web application that allows users to record their voice, 
   Stop the recording to finalize and process the audio.
 - **Voice-to-Text Conversion:**  
   Convert the recorded audio into text using the AssemblyAI API.
-- **Offline Support (Bonus):**  
+- **Offline Support:**  
   Record your voice while offline and automatically convert it when the connection is restored.
 - **Modern UI:**  
   A clean and user-friendly interface styled with CSS.
-- **(Optional) Unit Testing:**  
+- **Unit Testing:**  
   Tests using Jest and React Testing Library.
-- **(Optional) CI/CD Pipeline:**  
+- **CI/CD Pipeline:**  
   Automatic testing through a CI/CD pipeline.
 
 ## Getting Started
@@ -44,13 +44,13 @@ This is a simple React web application that allows users to record their voice, 
    ```
 
 3. **Set Up Environment Variables:**
-Create a .env file in the root directory and add your AssemblyAI API key:
+   Create a .env file in the root directory and add your AssemblyAI API key:
    ```bash
    REACT_APP_ASSEMBLYAI_API_KEY=your_api_key_here
    ```
 
 ### Running the Application
-Start the development server:
+   Start the development server:
    ```bash
    npm start
    ```
@@ -67,19 +67,19 @@ Your application will run on http://localhost:3000.
   If paused, click Resume to continue recording.
 - **Stop:**
   Click the Stop button to finish the recording. The app will then convert your audio into text.
-- **Offline Mode (Bonus):**
+- **Offline Mode:**
   When offline, the recording is stored locally and automatically processed when connectivity is restored.
 
 ## Testing
 
-(Optional) Run the unit tests using:
+Run the unit tests using:
    ```bash
    npm test
    ```
 
 ## CI/CD Pipeline
 
-(Optional) A CI/CD pipeline can be set up (e.g., with GitHub Actions) to run tests automatically on every push or pull request.
+A CI/CD pipeline can be set up (e.g., with GitHub Actions) to run tests automatically on every push or pull request.
 
 ## Technologies Used
 
@@ -88,7 +88,7 @@ Your application will run on http://localhost:3000.
 - **Web Audio API:** For recording audio in the browser.
 - **AssemblyAI API:** For converting voice recordings to text.
 - **CSS:** For styling the application.
-- **Jest & React Testing Library:** For unit testing (optional).
+- **Jest & React Testing Library:** For unit testing.
 
 ## Demo
 
