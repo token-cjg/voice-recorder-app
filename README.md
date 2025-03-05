@@ -34,7 +34,7 @@ This is a simple React web application that allows users to record their voice, 
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/voice-recorder-app.git
+   git clone https://github.com/token-cjg/voice-recorder-app.git
    cd voice-recorder-app
    ```
 
