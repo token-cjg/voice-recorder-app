@@ -12,4 +12,17 @@ module.exports = {
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageThreshold: {
+    global: {
+      branches: 75,
+      functions: 75,
+      lines: 80,
+      statements: 80,
+    },
+  },
+  coveragePathIgnorePatterns: [
+    "<rootDir>/src/reportWebVitals.js",
+  ],
 };

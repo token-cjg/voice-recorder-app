@@ -27,7 +27,8 @@
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "test:rs": "react-scripts test",
     "test": "jest --silent",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "coverage:open": "open coverage/lcov-report/index.html"
   },
   "eslintConfig": {
     "extends": [
