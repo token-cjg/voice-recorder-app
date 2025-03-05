@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-unused-vars: ["error", { "args": "none" }] */
 
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useTranscriptionFlow } from './useTranscriptionFlow';
+import useTranscriptionFlow from './useTranscriptionFlow';
 import { useUploadAudio } from './transcribe/useUploadAudio';
 import { useStartTranscription } from './transcribe/useStartTranscription';
 import { usePollTranscription } from './transcribe/usePollTranscription';

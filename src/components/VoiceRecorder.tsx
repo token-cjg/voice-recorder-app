@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC } from 'react';
 import useMediaRecorder from '../hooks/useMediaRecorder';
-import { useTranscriptionFlow } from '../hooks/useTranscriptionFlow';
+import useTranscriptionFlow from '../hooks/useTranscriptionFlow';
 
 const VoiceRecorder: FC = () => {
   const { 

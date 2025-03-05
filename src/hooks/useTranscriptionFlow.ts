@@ -3,7 +3,7 @@ import { useUploadAudio } from './transcribe/useUploadAudio';
 import { useStartTranscription } from './transcribe/useStartTranscription';
 import { usePollTranscription } from './transcribe/usePollTranscription';
 
-export const useTranscriptionFlow = () => {
+const useTranscriptionFlow = () => {
     const [transcriptId, setTranscriptId] = useState<string | null>(null);
   
     const { mutate: uploadMutation } = useUploadAudio();
@@ -41,4 +41,5 @@ export const useTranscriptionFlow = () => {
       error: pollQuery.error,
     };
   };
-  
+
+export default useTranscriptionFlow;
