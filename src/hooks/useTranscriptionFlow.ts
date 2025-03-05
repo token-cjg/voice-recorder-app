@@ -6,32 +6,22 @@ import { usePollTranscription } from './transcribe/usePollTranscription';
 const useTranscriptionFlow = () => {
     const [transcriptId, setTranscriptId] = useState<string | null>(null);
   
-    const { mutate: uploadMutation } = useUploadAudio();
-    const { mutate: startTranscriptionMutation } = useStartTranscription();
+    const { mutateAsync: uploadAudio } = useUploadAudio();
+    const { mutateAsync: startTranscription } = useStartTranscription();
     const pollQuery = usePollTranscription(transcriptId, transcriptId !== null);
   
     /**
-     * Runs the full transcription flow:
+     * Runs the transcription flow:
      * 1. Uploads the blob.
      * 2. Starts the transcription.
      * 3. Sets the transcriptId to enable polling.
+     *
+     * If any mutation fails the returned Promise is rejected.
      */
     const transcribeAudio = async (blob: Blob) => {
-        uploadMutation(blob, {
-            onSuccess: async (data) => {
-                startTranscriptionMutation(data, {
-                    onSuccess: (transcriptData) => {
-                        setTranscriptId(transcriptData.id);
-                    },
-                    onError: (error) => {
-                        console.error('Error starting transcription:', error);
-                    },
-                });
-            },
-            onError: (error) => {
-                console.error('Error uploading audio:', error);
-            },
-        });
+        const uploadData = await uploadAudio(blob);
+        const transcriptData = await startTranscription(uploadData);
+        setTranscriptId(transcriptData.id);
     };
   
     return {
