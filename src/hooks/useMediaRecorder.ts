@@ -9,20 +9,22 @@ const useMediaRecorder = () => {
   const audioChunksRef = useRef<Blob[]>([]);
 
   const startRecording = async () => {
+    setAudioBlob(null);
+
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     mediaRecorderRef.current = new MediaRecorder(stream);
     
     mediaRecorderRef.current.ondataavailable = (event) => {
-    if (event.data.size > 0) {
-        audioChunksRef.current.push(event.data);
-    }
+      if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+      }
     };
 
     mediaRecorderRef.current.onstop = () => {
-    const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-    setAudioBlob(blob);
-    audioChunksRef.current = [];
+      const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+      setAudioBlob(blob);
+      audioChunksRef.current = [];
     };
 
     mediaRecorderRef.current.start();

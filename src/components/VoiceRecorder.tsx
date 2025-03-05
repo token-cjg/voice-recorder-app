@@ -31,11 +31,17 @@ const VoiceRecorder: FC = () => {
     }
   }, [transcriptionData]);
 
+  const onClickRecord = () => {
+    setTranscript('');
+    startRecording();
+    setHasTranscribed(false);
+  };
+
   return (
     <div className="voice-recorder">
       <h2>Voice Recorder</h2>
       <div className="controls">
-        {recordingState !== 'recording' && <button onClick={startRecording}>Record</button>}
+        {recordingState !== 'recording' && <button onClick={onClickRecord}>Record</button>}
         {recordingState === 'recording' && <button onClick={pauseRecording}>Pause</button>}
         {recordingState === 'paused' && <button onClick={resumeRecording}>Resume</button>}
         {(recordingState === 'recording' || recordingState === 'paused') && <button onClick={stopRecording}>Stop</button>}
