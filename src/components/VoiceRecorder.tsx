@@ -1,7 +1,6 @@
 import { useState, useEffect, FC } from 'react';
 import useMediaRecorder from '../hooks/useMediaRecorder';
-
-const ASSEMBLYAI_API_KEY = process.env.REACT_APP_ASSEMBLYAI_API_KEY as string;
+import { useTranscriptionFlow } from '../hooks/useTranscriptionFlow';
 
 const VoiceRecorder: FC = () => {
   const { 
@@ -14,69 +13,23 @@ const VoiceRecorder: FC = () => {
   } = useMediaRecorder();
 
   const [transcript, setTranscript] = useState<string>('');
+  // Flag to ensure transcription is triggered only once per recording session
+  const [hasTranscribed, setHasTranscribed] = useState<boolean>(false);
 
-  const convertVoiceToText = async (blob: Blob): Promise<void> => {
-    console.log('Converting voice to text...');
-    console.log('Blob:', blob);
-    console.log('API key:', ASSEMBLYAI_API_KEY);
-    try {
-      // Step 1: Upload the blob to AssemblyAI's upload endpoint
-      const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
-        method: 'POST',
-        headers: {
-          authorization: ASSEMBLYAI_API_KEY,
-        },
-        body: blob,
-      });
-      const uploadData = await uploadResponse.json();
-      const audioUrl = uploadData.upload_url;
-  
-      // Step 2: Start a transcription job using the uploaded audio URL
-      const transcriptResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
-        method: 'POST',
-        headers: {
-          authorization: ASSEMBLYAI_API_KEY,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ audio_url: audioUrl }),
-      });
-      const transcriptData = await transcriptResponse.json();
-      const transcriptId = transcriptData.id;
-  
-      // Step 3: Poll for the transcription result
-      let transcriptText = '';
-      let status = transcriptData.status;
-      while (status !== 'completed') {
-        // Wait a few seconds before polling again
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-  
-        const pollingResponse = await fetch(
-          `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-          {
-            headers: { authorization: ASSEMBLYAI_API_KEY },
-          }
-        );
-        const pollingData = await pollingResponse.json();
-        status = pollingData.status;
-  
-        if (status === 'completed') {
-          transcriptText = pollingData.text;
-        } else if (status === 'error') {
-          console.error('Transcription error:', pollingData.error);
-          break;
-        }
-      }
-      setTranscript(transcriptText);
-    } catch (error) {
-      console.error('Error converting voice to text:', error);
-    }
-  };  
+  const { transcribeAudio, transcriptionData, isTranscribing, error } = useTranscriptionFlow();
 
   useEffect(() => {
-    if (recordingState === 'stopped' && audioBlob) {
-      convertVoiceToText(audioBlob);
+    if (recordingState === 'stopped' && audioBlob && !hasTranscribed) {
+      transcribeAudio(audioBlob);
+      setHasTranscribed(true);
     }
-  }, [recordingState, audioBlob]);
+  }, [recordingState, audioBlob, transcribeAudio, hasTranscribed]);
+
+  useEffect(() => {
+    if (transcriptionData && transcriptionData.status === 'completed') {
+      setTranscript(transcriptionData.text);
+    }
+  }, [transcriptionData]);
 
   return (
     <div className="voice-recorder">
@@ -89,7 +42,8 @@ const VoiceRecorder: FC = () => {
       </div>
       <div className="transcript">
         <h3>Transcript:</h3>
-        <p>{transcript}</p>
+        {isTranscribing ? <p>Transcribing...</p> : <p>{transcript}</p>}
+        {error && <p style={{ color: 'red' }}>Error: {error.toString()}</p>}
       </div>
     </div>
   );
