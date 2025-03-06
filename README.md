@@ -92,7 +92,14 @@ A CI/CD pipeline can be set up (e.g., with GitHub Actions) to run tests automati
 
 ## Demo
 
-A demo video showcasing the application features is available here (insert link to demo video).
+Demonstrates
+- Basic recording functionality
+- Recording another thing afterwards functionality
+- The little recording that could when disconnected when the web
+
+Now with bonus time loop!
+
+https://github.com/user-attachments/assets/3c59a0fb-df7e-4398-94bd-1a89f57396dd
 
 ## License
 
