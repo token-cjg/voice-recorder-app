@@ -95,7 +95,7 @@ A CI/CD pipeline can be set up (e.g., with GitHub Actions) to run tests automati
 Demonstrates
 - Basic recording functionality
 - Recording another thing afterwards functionality
-- The little recording that could when disconnected when the web
+- The little recording that could when disconnected from the web
 
 Now with bonus time loop!
 
