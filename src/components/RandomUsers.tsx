@@ -1,5 +1,6 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { FC } from 'react';
 import { RANDOM_USERS_API_URL } from '../constants';
+import { useQuery } from '@tanstack/react-query';
 
 interface User {
   name: {
@@ -17,36 +18,27 @@ interface User {
 }
 
 const RandomUsers: FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(`${RANDOM_USERS_API_URL}50`);
-        const data = await response.json();
-        // Process the data and extract the top 5 users
-        setUsers(data.results.slice(0, 5));
-      } catch (err: unknown) {
-        console.error('Error fetching random users:', err);
-        const caughtError: Error = err instanceof Error ? err : new Error(String(err));
-        setError(caughtError.message);
-      } finally {
-        setLoading(false);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['randomUsers'],
+    queryFn: async () => {
+      const response = await fetch(`${RANDOM_USERS_API_URL}50`);
+      if (!response.ok) {
+        throw new Error('Error fetching random users');
       }
-    };
+      return response.json();
+    },
+  });
 
-    fetchUsers();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <div>Loading users...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {(error as Error).message}</div>;
   }
+
+  // Process the data and extract the top 5 users
+  const users: User[] = data?.results.slice(0, 5) ?? [];
 
   return (
     <div className="random-users">
