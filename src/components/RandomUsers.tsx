@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { RANDOM_USERS_API_URL } from '../constants';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +18,9 @@ interface User {
 }
 
 const RandomUsers: FC = () => {
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
   const { data, error, isLoading } = useQuery({
     queryKey: ['randomUsers'],
     queryFn: async () => {
@@ -29,6 +32,23 @@ const RandomUsers: FC = () => {
     },
   });
 
+  // Process the data and extract the top 5 users
+  const users: User[] = data?.results.slice(0, 5) ?? [];
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredUsers(users);
+    } else {
+      const lowerSearch = searchTerm.toLowerCase();
+      const filtered = users.filter((user) =>
+        `${user.name.first} ${user.name.last}`
+          .toLowerCase()
+          .includes(lowerSearch)
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
+
   if (isLoading) {
     return <div>Loading users...</div>;
   }
@@ -37,30 +57,45 @@ const RandomUsers: FC = () => {
     return <div>Error: {(error as Error).message}</div>;
   }
 
-  // Process the data and extract the top 5 users
-  const users: User[] = data?.results.slice(0, 5) ?? [];
-
   return (
     <div className="random-users">
-      <h2>Random Users</h2>
-      <ul>
-        {users.map((user, index) => (
-          <li key={index} style={{ listStyleType: 'none', marginBottom: '1rem' }}>
-            <img src={user.picture.thumbnail} alt={`${user.name.first} ${user.name.last}`} />
-            <div>
-              <p>
-                <strong>Name:</strong> {user.name.first} {user.name.last}
-              </p>
-              <p>
-                <strong>Email:</strong> {user.email}
-              </p>
-              <p>
-                <strong>Nationality:</strong> {user.nat}
-              </p>
-            </div>
-          </li>
+      {/* Stats */}
+      <div className="mb-4">
+        <p>Total Users: {users.length}</p>
+        <p>Displayed Users: {filteredUsers.length}</p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search by name..."
+          className="px-4 py-2 rounded text-black w-64"
+        />
+      </div>
+
+      {/* Grid of Users */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {filteredUsers.map((user, index) => (
+          <div
+            key={index}
+            className="bg-gray-800 rounded-lg p-4 flex flex-col items-center text-center shadow"
+          >
+            <img
+              src={user.picture.large}
+              alt={`${user.name.first} ${user.name.last}`}
+              className="w-32 h-32 rounded-full object-cover mb-4"
+            />
+            <h2 className="text-xl font-semibold mb-1">
+              {user.name.first} {user.name.last}
+            </h2>
+            <p className="mb-1 text-gray-300">{user.email}</p>
+            <p className="text-gray-400">Nationality: {user.nat}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
