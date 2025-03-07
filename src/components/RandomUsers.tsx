@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { RANDOM_USERS_API_URL } from '../constants';
 import { useQuery } from '@tanstack/react-query';
 
@@ -20,7 +20,9 @@ interface User {
 const RandomUsers: FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedNationality, setSelectedNationality] = useState<string>('All');
 
+  // Fetch users via React Query
   const { data, error, isLoading } = useQuery({
     queryKey: ['randomUsers'],
     queryFn: async () => {
@@ -33,21 +35,37 @@ const RandomUsers: FC = () => {
   });
 
   // Process the data and extract the top 5 users
-  const users: User[] = data?.results.slice(0, 5) ?? [];
+  const users: User[] = data?.results.slice(0, 20) ?? [];
 
+  // Compute unique nationalities (e.g., ['AU', 'BR', 'CA', ...])
+  // Only runs again if `users` changes
+  const nationalities = useMemo(() => {
+    const uniqueNats = new Set(users.map((user) => user.nat));
+    return Array.from(uniqueNats);
+  }, [users]);
+
+  // Filter logic: name + nationality
   useEffect(() => {
-    if (!searchTerm) {
-      setFilteredUsers(users);
-    } else {
+    // Start with all users
+    let updated = [...users];
+
+    // Filter by search term (first + last name)
+    if (searchTerm.trim()) {
       const lowerSearch = searchTerm.toLowerCase();
-      const filtered = users.filter((user) =>
+      updated = updated.filter((user) =>
         `${user.name.first} ${user.name.last}`
           .toLowerCase()
           .includes(lowerSearch)
       );
-      setFilteredUsers(filtered);
     }
-  }, [searchTerm, users]);
+
+    // Filter by selected nationality
+    if (selectedNationality !== 'All') {
+      updated = updated.filter((user) => user.nat === selectedNationality);
+    }
+
+    setFilteredUsers(updated);
+  }, [searchTerm, selectedNationality, users]);
 
   if (isLoading) {
     return <div>Loading users...</div>;
@@ -58,15 +76,18 @@ const RandomUsers: FC = () => {
   }
 
   return (
-    <div className="random-users">
+    <div className="random-users min-h-screen bg-gray-900 text-white flex flex-col items-center p-8">
+      <h1 className="text-3xl font-bold mb-4">User Directory</h1>
+
       {/* Stats */}
       <div className="mb-4">
         <p>Total Users: {users.length}</p>
         <p>Displayed Users: {filteredUsers.length}</p>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-6">
+      {/* Search + Nationality Filter */}
+      <div className="mb-6 flex items-center gap-4">
+        {/* Search Bar */}
         <input
           type="text"
           value={searchTerm}
@@ -74,6 +95,20 @@ const RandomUsers: FC = () => {
           placeholder="Search by name..."
           className="px-4 py-2 rounded text-black w-64"
         />
+
+        {/* Nationality Dropdown */}
+        <select
+          value={selectedNationality}
+          onChange={(e) => setSelectedNationality(e.target.value)}
+          className="px-4 py-2 rounded text-black"
+        >
+          <option value="All">All</option>
+          {nationalities.map((nat) => (
+            <option key={nat} value={nat}>
+              {nat}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Grid of Users */}
